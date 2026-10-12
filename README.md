@@ -1,3 +1,5 @@
+> **XEM TRƯỚC CHAMÉA KHÔNG CẦN HOSTING:** [MỞ TRONG GITHUB CODESPACES](https://codespaces.new/mhocbai-vnu/chame-website?quickstart=1). Chọn **Create codespace**; Python, SQLite và website được tự động khởi tạo. Trong tab **PORTS** mở cổng **8000 (Private)**. Mật khẩu quản trị thử nghiệm nằm ở tệp **data/PREVIEW_LOGIN.txt** (chỉ được tạo trong Codespace, không commit). [Hướng dẫn chi tiết](docs/CODESPACES_XEM_TRUOC.md).
+
 # CHAMÉA — Bộ mã nguồn website thương mại điện tử độc lập
 
 **Bàn giao phát triển (11/10/2026)**. FastAPI + Jinja2 + vanilla JavaScript + SQLAlchemy + SQLite, không dùng ChatGPT Sites khi chạy. Code frontend, backend, mô hình dữ liệu, CSS/JS, CMS, media upload, đơn hàng và file triển khai đều ở trong ZIP.
