@@ -1,0 +1,25 @@
+# CHAMÉA – triển khai dịch vụ Python có đĩa lưu dữ liệu lâu dài (gói trả phí).
+# Xem docs/TRIEN_KHAI_RENDER.md trước khi dùng Blueprint.
+services:
+  - type: web
+    name: chamea-boutique
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: SESSION_SECURE
+        value: "true"
+      - key: DATABASE_URL
+        value: sqlite:////opt/render/project/src/data/chamea.db
+      - key: MEDIA_DIR
+        value: /opt/render/project/src/data/media
+      - key: STORE_NAME
+        value: CHAMÉA
+    disk:
+      name: chamea-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 5
