@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% from 'blocks.html' import page_layout %}
+{% block body %}{% if page.slug not in ('trang-chu',) %}<div class="page-intro wrap"><span class="eyebrow">CHAMÉA</span><h1>{{page.name if page.name is defined else page.title}}</h1>{% if page.summary is defined %}<p>{{page.summary}}</p>{% endif %}</div>{% endif %}
+{{page_layout(layout,data,site,media_url)}}{% endblock %}

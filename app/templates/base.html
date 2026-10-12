@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page_title }}</title><meta name="description" content="{{ meta_description }}"><link rel="canonical" href="{{ canonical }}"><meta property="og:title" content="{{ page_title }}"><meta property="og:description" content="{{ meta_description }}"><meta property="og:type" content="website">
+{% if noindex %}<meta name="robots" content="noindex,nofollow">{% endif %}
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Serif+Display:wght@400;500;600&display=swap&subset=vietnamese" rel="stylesheet">
+<link rel="stylesheet" href="/static/site.css"><style>:root{--plum:{{site.theme_primary}};--gold:{{site.theme_accent}};--cream:{{site.theme_bg}}}</style>
+<script src="/static/site.js" defer></script></head>
+<body>
+{% if site.announcement_enabled=='true' %}<div class="announcement">{{site.announcement}}</div>{% endif %}
+<header class="site-header {% if site.sticky_header=='true' %}is-sticky{% endif %}"><div class="header-inner">
+<button class="mobile-nav-toggle icon-button" type="button" data-menu-toggle aria-label="Mở menu" aria-expanded="false">☰</button>
+<a class="logo" href="/" aria-label="CHAMÉA – trang chủ">{% if site.brand_logo and media_url(site.brand_logo) %}<img src="{{media_url(site.brand_logo)}}" alt="CHAMÉA" class="logo-image">{% else %}<span class="wordmark">CHAMÉA</span>{% endif %}</a>
+<nav class="main-nav" id="main-menu" aria-label="Điều hướng chính">{% for entry in menus %}{% if entry.url=='/san-pham' %}<div class="nav-dropdown"><a href="{{href(entry.url)}}">{{entry.text}}</a><div class="nav-submenu">{% for category in categories %}<a href="/danh-muc/{{category.slug}}">{{category.name}}</a>{% endfor %}</div></div>{% else %}<a href="{{href(entry.url)}}">{{entry.text}}</a>{% endif %}{% endfor %}</nav>
+<div class="header-tools"><button class="icon-button search-toggle" aria-label="Tìm kiếm" data-search-toggle>⌕</button><a class="icon-button" href="/yeu-thich" aria-label="Sản phẩm yêu thích">♡</a><a class="icon-button basket-link" href="/gio-hang" aria-label="Giỏ hàng">♧<span id="cart-badge">0</span></a></div>
+</div><aside id="cart-drawer" hidden role="dialog" aria-modal="true" aria-label="Giỏ hàng của bạn"><div class="drawer-header"><h2>Giỏ hàng</h2><button type="button" id="close-cart-drawer" aria-label="Đóng giỏ hàng">×</button></div><div id="drawer-cart-items"></div><a class="btn wide" href="/gio-hang">Xem giỏ hàng đầy đủ</a><a class="btn btn-outline wide" href="/thanh-toan">Đặt hàng</a></aside><div id="drawer-backdrop" hidden></div><form class="header-search" method="get" action="/san-pham" id="header-search" hidden><label for="q">Tìm sản phẩm</label><input id="q" name="q" placeholder="Tên túi hoặc mã sản phẩm"><button class="btn mini">Tìm</button></form></header>
+<main id="main">{% block body %}{% endblock %}</main>
+<footer class="footer"><div class="footer-grid wrap"><div><div class="footer-brand">CHAMÉA</div><p>Chạm đúng người · Trao đúng quà</p><p>Túi xách thanh lịch dành cho phụ nữ hiện đại.</p></div>
+<div><h3>Khám phá</h3><a href="/san-pham">Túi xách</a><a href="/bo-suu-tap">Bộ sưu tập</a><a href="/goc-chon-qua">Góc chọn quà</a><a href="/goi-y-chon-qua">Gợi ý chọn quà</a></div>
+<div><h3>Hỗ trợ</h3><a href="/giao-hang">Chính sách giao hàng</a><a href="/doi-tra">Đổi trả</a><a href="/bao-mat">Bảo mật</a><a href="/lien-he">Liên hệ</a><p>Thanh toán: COD hoặc QR</p></div>
+<div><h3>Liên hệ & nhận tin</h3><p>{% if site.phone %}{{site.phone}}{% else %}Thông tin liên hệ đang cập nhật{% endif %}</p>{% if site.email %}<p>{{site.email}}</p>{% endif %}
+<form class="newsletter-form" data-ajax="newsletter"><label for="newsletter-email">Nhận thông tin từ CHAMÉA</label><input id="newsletter-email" name="email" type="email" placeholder="Email của bạn" required><label class="check"><input name="consent" type="checkbox" required> Tôi đồng ý nhận tin và có thể hủy bất cứ lúc nào</label><button type="submit" class="btn light">Đăng ký</button><p class="form-result" role="status"></p></form></div></div><div class="footer-bottom wrap">© CHAMÉA · Giao diện triển khai riêng · Không hiển thị thông tin chưa xác thực</div></footer>
+</body></html>

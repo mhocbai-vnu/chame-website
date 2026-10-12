@@ -1,0 +1,14 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: sqlite:////srv/chamea/data/chamea.db
+      MEDIA_DIR: /srv/chamea/data/media
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data:/srv/chamea/data
+    security_opt:
+      - no-new-privileges:true

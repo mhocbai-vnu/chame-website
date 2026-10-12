@@ -1,0 +1,45 @@
+{% macro productcard(item) %}
+<article class="product-card" data-product-id="{{item.item.id}}" data-fav-card="{{item.item.id}}"><div class="product-thumb">{% if item.image %}<a href="/san-pham/{{item.item.slug}}"><img src="{{item.image}}" alt="{{item.item.name}}" loading="lazy"></a>{% else %}<div class="image-empty">Hình sản phẩm đang cập nhật</div>{% endif %}<button type="button" class="favorite" data-favorite="{{item.item.id}}" aria-label="Lưu yêu thích">♡</button></div><div class="product-info"><a href="/san-pham/{{item.item.slug}}" class="product-name">{{item.item.name}}</a><p class="price">{{money(item.price)}}{% if item.discount_percent %}<s class="old-price">{{money(item.original_price)}}</s><span class="sale-label">−{{item.discount_percent}}%</span>{% endif %}</p><a class="product-cta" href="/san-pham/{{item.item.slug}}">Chọn túi <span aria-hidden="true">↗</span></a></div></article>
+{% endmacro %}
+
+{% macro block(b, data, site, media_url) %}
+{% set c=b.content %}{% set t=b.type %}
+<div id="block-{{b.id}}" class="cms-block cms-{{t}} {% if b.responsive.get('mobile',{}).get('hide') %}hide-mobile{% endif %} {% if b.responsive.get('tablet',{}).get('hide') %}hide-tablet{% endif %} {% if b.responsive.get('desktop',{}).get('hide') %}hide-desktop{% endif %}" style="{{safe_style(b.style)}};{% if b.responsive.get('mobile',{}).get('fontSize')|string|int > 0 %}--mobile-font:{{b.responsive.get('mobile',{}).get('fontSize')|int}}px;{% endif %}{% if b.responsive.get('tablet',{}).get('fontSize')|string|int > 0 %}--tablet-font:{{b.responsive.get('tablet',{}).get('fontSize')|int}}px;{% endif %}">
+{% if t=='heading' %}<h2>{{c.text}}</h2>
+{% elif t=='text' %}<p class="prose-text">{{c.text}}</p>
+{% elif t=='richtext' %}<div class="rich-content">{{c.html|safe}}</div>
+{% elif t=='image' %}{% if c.src %}<figure class="cms-figure"><img src="{{c.src}}" alt="{{c.alt or ''}}" loading="lazy" style="object-fit:{{'cover' if b.style.get('fit')=='cover' else 'contain'}}">{% if c.caption %}<figcaption>{{c.caption}}</figcaption>{% endif %}</figure>{% endif %}
+{% elif t=='video' %}{% if c.src %}<div class="video-wrap"><video controls playsinline preload="metadata" {% if c.poster %}poster="{{c.poster}}"{% endif %} {% if c.autoplay=='true' %}autoplay muted{% endif %} {% if c.loop=='true' %}loop{% endif %}><source src="{{c.src}}"><p>Trình duyệt không hỗ trợ video.</p></video></div>{% endif %}
+{% elif t=='gallery' %}<div class="gallery">{% for item in c.images or [] %}{% if item.src %}<img src="{{item.src}}" alt="{{item.alt or ''}}" loading="lazy">{% endif %}{% endfor %}</div>
+{% elif t=='button' %}<a class="btn" href="{{href(c.href)}}">{{c.text or 'Xem thêm'}}</a>
+{% elif t=='divider' %}<hr>
+{% elif t=='spacer' %}<div class="spacer-block"></div>
+{% elif t=='hero' %}<div class="campaign-hero {% if site.hero_image and media_url(site.hero_image) %}has-image{% endif %}">{% if site.hero_image and media_url(site.hero_image) %}<picture class="hero-media">{% if site.hero_mobile and media_url(site.hero_mobile) %}<source media="(max-width:600px)" srcset="{{media_url(site.hero_mobile)}}">{% endif %}<img src="{{media_url(site.hero_image)}}" alt="Hình chiến dịch CHAMÉA" fetchpriority="high"></picture>{% endif %}<div class="hero-arch" aria-hidden="true"></div><div class="hero-copy"><span class="eyebrow">CHAMÉA · Chạm đúng người</span><h1>{{c.title}}</h1><p>{{c.subtitle}}</p><div class="hero-buttons"><a class="btn light" href="{{href(c.href)}}">{{c.primary or 'Khám phá'}}</a><a class="text-link" href="{{href(c.href2)}}">{{c.secondary or 'Tìm túi phù hợp'}} ↗</a></div></div></div>
+{% elif t=='products' %}<div class="product-grid">{% for item in data.products %}{{productcard(item)}}{% else %}<p class="muted collection-empty">Các thiết kế sẽ hiển thị sau khi CHAMÉA cập nhật sản phẩm đã xác minh.</p>{% endfor %}</div>
+{% elif t=='product' %}{% for item in data.products %}{% if item.item.id|string==c.product_id|string %}{{productcard(item)}}{% endif %}{% endfor %}
+{% elif t=='categories' %}<div class="category-grid">{% for cat in data.categories %}<a class="category-tile" href="/danh-muc/{{cat.slug}}">{% if cat.image_id and media_url(cat.image_id) %}<img src="{{media_url(cat.image_id)}}" loading="lazy" alt="{{cat.name}}">{% else %}<span class="decor-arch" aria-hidden="true"></span>{% endif %}<span>{{cat.name}} <span>↗</span></span></a>{% endfor %}</div>
+{% elif t=='collections' %}<div class="collection-grid">{% for col in data.collections %}<a class="collection-tile" href="/bo-suu-tap/{{col.slug}}">{% if col.image_id and media_url(col.image_id) %}<img src="{{media_url(col.image_id)}}" alt="{{col.name}}" loading="lazy">{% endif %}<span class="eyebrow">BỘ SƯU TẬP</span><h3>{{col.name}}</h3><span>Khám phá ↗</span></a>{% endfor %}</div>
+{% elif t=='articles' %}<div class="article-grid">{% for p in data.articles[:3] %}<article class="article-tile"><span class="eyebrow">GÓC CHỌN QUÀ</span><a href="/bai-viet/{{p.slug}}"><h3>{{p.title}}</h3></a><p>{{p.summary}}</p><a class="text-link" href="/bai-viet/{{p.slug}}">Đọc bài viết ↗</a></article>{% endfor %}</div>
+{% elif t=='featured_article' %}{% for p in data.articles[:1] %}<a href="/bai-viet/{{p.slug}}"><h3>{{p.title}}</h3><p>{{p.summary}}</p></a>{% endfor %}
+{% elif t=='gift_banner' %}<div class="gift-banner"><div class="gift-copy"><span class="eyebrow">CHAMÉA · QUÀ TẶNG</span><h2>{{c.title}}</h2><p>{{c.text}}</p><a class="btn light" href="{{href(c.href)}}">{{c.button}}</a></div>{% if site.gift_image and media_url(site.gift_image) %}<img src="{{media_url(site.gift_image)}}" alt="Bộ sưu tập quà tặng CHAMÉA" loading="lazy">{% endif %}</div>
+{% elif t=='brandvideo' %}{% if site.brand_video and media_url(site.brand_video) %}<div class="brand-video-block"><div><span class="eyebrow">CÂU CHUYỆN CHAMÉA</span><h2>Mỗi chiếc túi, một câu chuyện riêng</h2></div><video controls playsinline preload="metadata" {% if site.brand_video_poster and media_url(site.brand_video_poster) %}poster="{{media_url(site.brand_video_poster)}}"{% endif %}><source src="{{media_url(site.brand_video)}}"></video></div>{% endif %}
+{% elif t=='giftquiz' %}<div class="quiz-promo"><span class="eyebrow">ĐỀ XUẤT DỰA TRÊN NHU CẦU</span><h2>Bạn đang tìm túi cho ai?</h2><p>Chọn người nhận, phong cách, nhu cầu và ngân sách để xem những mẫu phù hợp.</p><a class="btn" href="/goi-y-chon-qua">Tìm chiếc túi phù hợp</a></div>
+{% elif t=='consult' %}<div class="consult-panel"><div><span class="eyebrow">CHÚNG TÔI LẮNG NGHE</span><h2>Chưa biết chọn mẫu nào?</h2><p>CHAMÉA giúp bạn cân nhắc theo phong cách, nhu cầu và ngân sách.</p></div><form class="consult-form" data-ajax="contact"><label>Họ tên<input name="name" required minlength="2"></label><label>Số điện thoại<input name="phone" required inputmode="tel"></label><label>Lời nhắn<textarea name="message" required minlength="5" placeholder="Bạn muốn tìm chiếc túi như thế nào?"></textarea></label><input class="honeypot" name="website" tabindex="-1" autocomplete="off"><button type="submit" class="btn">Nhận tư vấn chọn túi</button><p class="form-result" role="status"></p></form></div>
+{% elif t=='newsletter' %}<form class="newsletter-form" data-ajax="newsletter"><label>Email nhận tin<input name="email" type="email" required></label><label class="check"><input name="consent" type="checkbox" required> Tôi đồng ý nhận tin</label><button class="btn">Đăng ký</button><p class="form-result" role="status"></p></form>
+{% elif t=='faq' %}<details><summary>{{c.question or 'Câu hỏi'}}</summary><p>{{c.answer}}</p></details>
+{% elif t=='icontext' %}<div class="icon-text"><span aria-hidden="true">✦</span><div><h3>{{c.title}}</h3><p>{{c.text}}</p></div></div>
+{% elif t=='product_detail' %}<a href="/san-pham">Chọn sản phẩm từ danh mục ↗</a>
+{% elif t=='cart' %}<a href="/gio-hang">Mở giỏ hàng ↗</a>
+{% elif t=='checkout' %}<a href="/thanh-toan">Đến trang đặt hàng ↗</a>
+{% endif %}
+</div>
+{% endmacro %}
+
+{% macro page_layout(layout, data, site, media_url) %}
+{% for s in layout.sections %}
+<section class="editable-section {% if loop.first %}first-section{% endif %}" style="{{safe_style(s.settings)}}"><div class="section-inner {% if loop.first and s.rows[0].columns[0].blocks[0].type=='hero' %}hero-section-inner{% endif %}">
+{% for r in s.rows %}<div class="editable-row" data-columns="{{r.columns|length}}" data-mobile-cols="{{r.responsive.get('mobile',{}).get('columns',1)|int if r.responsive is defined else 1}}" data-tablet-cols="{{r.responsive.get('tablet',{}).get('columns',1)|int if r.responsive is defined else 1}}">
+{% for col in r.columns %}<div class="editable-col" style="flex: {{col.span}} 1 0%;min-width:0">{% for b in col.blocks %}{{block(b,data,site,media_url)}}{% endfor %}</div>{% endfor %}
+</div>{% endfor %}</div></section>
+{% endfor %}
+{% endmacro %}
